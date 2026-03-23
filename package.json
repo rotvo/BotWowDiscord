@@ -1,0 +1,28 @@
+{
+  "name": "wow-guild-bot",
+  "version": "1.0.0",
+  "description": "Bot de Discord para gestionar guild de WoW — raids, M+, reclutamiento, APIs de Blizzard y Raider.IO",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "dev:watch": "tsx watch src/index.ts"
+  },
+  "keywords": ["wow", "discord", "bot", "guild", "raiderio"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.14",
+    "@types/node": "^22.15.21",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
