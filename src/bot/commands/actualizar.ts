@@ -48,14 +48,16 @@ export default {
       if (profile) {
         const newIlvl = profile.gear?.item_level_equipped ?? 0;
         const newRio = profile.mythic_plus_scores_by_season?.[0]?.scores?.all ?? 0;
+        const specName = profile.active_spec_name ?? c.wow_spec ?? 'Desconocido';
+        const specRole = profile.active_spec_role ?? c.wow_role ?? 'DPS';
 
         upsertCharacter(
           interaction.user.id,
           profile.name,
           profile.realm,
           profile.class,
-          profile.active_spec_name,
-          profile.active_spec_role,
+          specName,
+          specRole,
           newIlvl,
           newRio,
         );

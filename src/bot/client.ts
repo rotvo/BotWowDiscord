@@ -5,6 +5,7 @@ import {
   Partials,
   REST,
   Routes,
+  type AutocompleteInteraction,
   type ChatInputCommandInteraction,
   type SlashCommandBuilder,
 } from 'discord.js';
@@ -15,6 +16,7 @@ import { pathToFileURL } from 'url';
 
 export interface BotCommand {
   data: SlashCommandBuilder;
+  autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 

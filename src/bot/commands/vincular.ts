@@ -216,9 +216,11 @@ export default {
           'Survival',
         ]);
         const specRoleMap: Record<string, string> = { HEALING: 'Healer', TANK: 'Tank' };
-        let specRoleName = specRoleMap[profile.active_spec_role] ?? null;
-        if (profile.active_spec_role === 'DPS') {
-          specRoleName = MELEE_SPECS.has(profile.active_spec_name) ? 'DPS Melee' : 'DPS Ranged';
+        const activeSpecRole = profile.active_spec_role;
+        const activeSpecName = profile.active_spec_name ?? '';
+        let specRoleName = activeSpecRole ? (specRoleMap[activeSpecRole] ?? null) : null;
+        if (activeSpecRole === 'DPS') {
+          specRoleName = MELEE_SPECS.has(activeSpecName) ? 'DPS Melee' : 'DPS Ranged';
         }
         if (specRoleName) {
           const hasAnyRole = ROLE_TYPES.some((rt) => member.roles.cache.find((r) => r.name === rt));
