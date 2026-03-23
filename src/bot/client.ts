@@ -12,7 +12,13 @@ import {
 import { config } from '../config.js';
 import fs from 'fs';
 import path from 'path';
-import { pathToFileURL } from 'url';
+
+function getModuleFiles(dirPath: string): string[] {
+  return fs.readdirSync(dirPath).filter((file) => {
+    const isScriptFile = file.endsWith('.js') || file.endsWith('.ts');
+    return isScriptFile && !file.endsWith('.d.ts');
+  });
+}
 
 export interface BotCommand {
   data: SlashCommandBuilder;
@@ -39,13 +45,11 @@ export class BotClient extends Client {
 
   async loadCommands(): Promise<void> {
     const commandsPath = path.join(__dirname, 'commands');
-    const commandFiles = fs
-      .readdirSync(commandsPath)
-      .filter((f) => f.endsWith('.js') || f.endsWith('.ts'));
+    const commandFiles = getModuleFiles(commandsPath);
 
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file);
-      const mod = await import(pathToFileURL(filePath).href);
+      const mod = require(filePath);
       const command: BotCommand = mod.default ?? mod;
       if (command.data && typeof command.execute === 'function') {
         this.commands.set(command.data.name, command);
@@ -56,13 +60,11 @@ export class BotClient extends Client {
 
   async loadEvents(): Promise<void> {
     const eventsPath = path.join(__dirname, 'events');
-    const eventFiles = fs
-      .readdirSync(eventsPath)
-      .filter((f) => f.endsWith('.js') || f.endsWith('.ts'));
+    const eventFiles = getModuleFiles(eventsPath);
 
     for (const file of eventFiles) {
       const filePath = path.join(eventsPath, file);
-      const mod = await import(pathToFileURL(filePath).href);
+      const mod = require(filePath);
       const event = mod.default ?? mod;
       if (event.once) {
         this.once(event.name, (...args: unknown[]) => event.execute(...args));

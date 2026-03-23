@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 
 // Cargar .env desde la raíz del proyecto (donde está package.json)
 const envPath = path.resolve(process.cwd(), '.env');
-const result = dotenv.config({ path: envPath });
-if (result.error && process.env.NODE_ENV !== 'test') {
+const result = dotenv.config({ path: envPath, quiet: true });
+if (result.error && !result.error.message.includes('ENOENT') && process.env.NODE_ENV !== 'test') {
   console.warn('[Config] No se pudo cargar .env:', result.error.message);
 }
 

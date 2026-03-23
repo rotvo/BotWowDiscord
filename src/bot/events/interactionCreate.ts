@@ -10,9 +10,15 @@ import {
 import type { BotClient } from '../client.js';
 import fs from 'fs';
 import path from 'path';
-import { pathToFileURL } from 'url';
 import { checkCooldown } from '../../utils/cooldowns.js';
 import { checkPermission, permissionLabel } from '../../utils/permissions.js';
+
+function getModuleFiles(dirPath: string): string[] {
+  return fs.readdirSync(dirPath).filter((file) => {
+    const isScriptFile = file.endsWith('.js') || file.endsWith('.ts');
+    return isScriptFile && !file.endsWith('.d.ts');
+  });
+}
 
 const CHANNEL_REMINDERS: Record<string, string> = {
   'buscar-grupo':
@@ -29,12 +35,10 @@ async function handleButton(interaction: ButtonInteraction): Promise<void> {
   const buttonsPath = path.join(__dirname, '..', 'buttons');
   if (!fs.existsSync(buttonsPath)) return;
 
-  const buttonFiles = fs
-    .readdirSync(buttonsPath)
-    .filter((f) => f.endsWith('.js') || f.endsWith('.ts'));
+  const buttonFiles = getModuleFiles(buttonsPath);
 
   for (const file of buttonFiles) {
-    const mod = await import(pathToFileURL(path.join(buttonsPath, file)).href);
+    const mod = require(path.join(buttonsPath, file));
     const handler = mod.default ?? mod;
     if (handler.customId && interaction.customId.startsWith(handler.customId)) {
       await handler.execute(interaction);
@@ -47,12 +51,10 @@ async function handleModal(interaction: ModalSubmitInteraction): Promise<void> {
   const modalsPath = path.join(__dirname, '..', 'modals');
   if (!fs.existsSync(modalsPath)) return;
 
-  const modalFiles = fs
-    .readdirSync(modalsPath)
-    .filter((f) => f.endsWith('.js') || f.endsWith('.ts'));
+  const modalFiles = getModuleFiles(modalsPath);
 
   for (const file of modalFiles) {
-    const mod = await import(pathToFileURL(path.join(modalsPath, file)).href);
+    const mod = require(path.join(modalsPath, file));
     const handler = mod.default ?? mod;
     if (handler.customId && interaction.customId.startsWith(handler.customId)) {
       await handler.execute(interaction);
@@ -65,12 +67,10 @@ async function handleSelectMenu(interaction: StringSelectMenuInteraction): Promi
   const selectPath = path.join(__dirname, '..', 'selectmenus');
   if (!fs.existsSync(selectPath)) return;
 
-  const files = fs
-    .readdirSync(selectPath)
-    .filter((f) => f.endsWith('.js') || f.endsWith('.ts'));
+  const files = getModuleFiles(selectPath);
 
   for (const file of files) {
-    const mod = await import(pathToFileURL(path.join(selectPath, file)).href);
+    const mod = require(path.join(selectPath, file));
     const handler = mod.default ?? mod;
     if (handler.customId && interaction.customId.startsWith(handler.customId)) {
       await handler.execute(interaction);
