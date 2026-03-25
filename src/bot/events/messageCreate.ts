@@ -45,11 +45,10 @@ export default {
       );
       if (role) roleMention = role.toString();
     }
+    const parsed = parseRaiderIORunEmbed([...message.embeds]);
     const characterNames = extractCharacterNamesFromEmbeds([...message.embeds]);
     const discordIds = getDiscordIdsForCharacterNames(characterNames);
-    const prefix = buildRunMentionPrefix(roleMention, discordIds);
-
-    const parsed = parseRaiderIORunEmbed([...message.embeds]);
+    const prefix = buildRunMentionPrefix(parsed ? null : roleMention, discordIds);
     let content: string | undefined;
     let embeds: Message['embeds'] | import('discord.js').EmbedBuilder[];
     if (parsed) {
