@@ -22,44 +22,11 @@ import {
 function buildRaidDescription(
   descripcion: string,
   minIlvl: number,
-  dayTimestamps: number[],
-  startHour: number,
-  startMinute: number,
-  endHour: number,
-  endMinute: number,
   createdBy: string,
-  isRange: boolean,
 ): string {
   const ilvlLine = minIlvl > 0 ? `**iLvl Minimo:** ${minIlvl}\n` : '';
-  const timeStr = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')} - ${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-
-  if (isRange && dayTimestamps.length > 1) {
-    const daysLine = dayTimestamps
-      .map((ts) => `<t:${ts}:F>`)
-      .join(' · ');
-    return [
-      descripcion ? `${descripcion}\n` : '',
-      `**Dias:** ${daysLine}`,
-      `**Horario:** ${timeStr} (cada uno ve su zona)`,
-      `**Countdown:** <t:${dayTimestamps[0]}:R>`,
-      `**Creado por:** ${createdBy}`,
-      ilvlLine,
-      '**Composicion:**',
-      '🛡️ Tanks: *ninguno*',
-      '💚 Healers: *ninguno*',
-      '⚔️ DPS: *ninguno*',
-      '',
-      '⏳ Tentativos: *ninguno*',
-      '❌ No pueden: *ninguno*',
-    ].join('\n');
-  }
-
-  const ts = dayTimestamps[0];
   return [
     descripcion ? `${descripcion}\n` : '',
-    `**Fecha:** <t:${ts}:F>`,
-    `**Horario:** ${timeStr}`,
-    `**Countdown:** <t:${ts}:R>`,
     `**Creado por:** ${createdBy}`,
     ilvlLine,
     '**Composicion:**',
@@ -201,13 +168,7 @@ export default {
         buildRaidDescription(
           descripcion,
           minIlvl,
-          dayTimestamps,
-          startHour,
-          startMinute,
-          endHour,
-          endMinute,
           interaction.user.toString(),
-          isRange,
         ),
       )
       .setFooter({ text: `Raid ID: ${raidId}` })
